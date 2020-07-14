@@ -1,0 +1,22 @@
+{
+  "name": "portfolio-generator",
+  "version": "1.0.0",
+  "description": "Node app to generate a webpage",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vcaruso0923/portfolio-generator.git"
+  },
+  "author": "Vincent Caruso",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vcaruso0923/portfolio-generator/issues"
+  },
+  "homepage": "https://github.com/vcaruso0923/portfolio-generator#readme",
+  "dependencies": {
+    "inquirer": "^7.3.2"
+  }
+}
