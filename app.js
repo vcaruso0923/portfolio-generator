@@ -1,4 +1,4 @@
-const fs = require('fs');
+const {writeFile, copyFile} = require('./utils/generate-site.js')
 const generatePage = require('./src/page-template.js');
 
 // const profileDataArgs = process.argv.slice(2, process.argv.length);
@@ -9,45 +9,45 @@ const generatePage = require('./src/page-template.js');
 const inquirer = require('inquirer');
 
 const promptUser = () => {
-return inquirer.prompt([
-  {
-    type: 'input',
-    name: 'name',
-    message: 'What is your name?',
-    validate: nameInput => {
-      if (nameInput) {
-        return true;
-      } else {
-        console.log('Please enter your name!');
-        return false;
+  return inquirer.prompt([
+    {
+      type: 'input',
+      name: 'name',
+      message: 'What is your name?',
+      validate: nameInput => {
+        if (nameInput) {
+          return true;
+        } else {
+          console.log('Please enter your name!');
+          return false;
+        }
       }
-    }
-  },
-  {
-    type: 'input',
-    name: 'github',
-    message: 'Enter your GitHub Username',
-    validate: nameInput => {
-      if (nameInput) {
-        return true;
-      } else {
-        console.log('Please enter your Github Username!');
-        return false;
+    },
+    {
+      type: 'input',
+      name: 'github',
+      message: 'Enter your GitHub Username',
+      validate: nameInput => {
+        if (nameInput) {
+          return true;
+        } else {
+          console.log('Please enter your Github Username!');
+          return false;
+        }
       }
-    }
-  },
-  {
-    type: 'confirm',
-    name: 'confirmAbout',
-    message: 'Would you like to enter some information about yourself for an "About" section?',
-    default: true
-  },
-  {
-    type: 'input',
-    name: 'about',
-    message: 'Provide some information about yourself:',
-    when: ({ confirmAbout }) => confirmAbout
-  },
+    },
+    {
+      type: 'confirm',
+      name: 'confirmAbout',
+      message: 'Would you like to enter some information about yourself for an "About" section?',
+      default: true
+    },
+    {
+      type: 'input',
+      name: 'about',
+      message: 'Provide some information about yourself:',
+      when: ({ confirmAbout }) => confirmAbout
+    },
   ])
 }
 
@@ -121,24 +121,31 @@ const promptProject = portfolioData => {
       default: false
     }
   ])
-  .then(projectData => {
-    portfolioData.projects.push(projectData)
-    if (projectData.confirmAddProject) {
-      return promptProject(portfolioData);
-    } else {
-      return portfolioData;
-    }
-  });
+    .then(projectData => {
+      portfolioData.projects.push(projectData)
+      if (projectData.confirmAddProject) {
+        return promptProject(portfolioData);
+      } else {
+        return portfolioData;
+      }
+    });
 };
 
-promptUser()
+  promptUser()
   .then(promptProject)
   .then(portfolioData => {
-    const pageHTML = generatePage(portfolioData);
-
-    fs.writeFile('./index.html', pageHTML, err => {
-      if (err) throw new Error(err);
-
-      console.log('Page created! Check out index.html in this directory to see it!');
-    });
+    return generatePage(portfolioData);
+  })
+  .then(pageHTML => {
+    return writeFile(pageHTML);
+  })
+  .then(writeFileResponse => {
+    console.log(writeFileResponse);
+    return copyFile();
+  })
+  .then(copyFileResponse => {
+    console.log(copyFileResponse);
+  })
+  .catch(err => {
+    console.log(err);
   });
